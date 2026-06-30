@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "dgSpecHash": "O0ckBkbJM+k=",
-  "success": false,
+  "dgSpecHash": "UcvhPxWWJXU=",
+  "success": true,
   "projectFilePath": "C:\\DEVPOST.Hackathon\\UiPath AgentHack\\UiPath\\Orchestrateur_Final\\.local\\",
   "expectedPackageFiles": [
     "C:\\Users\\Administrateur\\.nuget\\packages\\automapper\\9.0.0\\automapper.9.0.0.nupkg.sha512",
@@ -83,6 +83,7 @@
     "C:\\Users\\Administrateur\\.nuget\\packages\\system.reflection.emit.ilgeneration\\4.3.0\\system.reflection.emit.ilgeneration.4.3.0.nupkg.sha512",
     "C:\\Users\\Administrateur\\.nuget\\packages\\system.reflection.metadata\\5.0.0\\system.reflection.metadata.5.0.0.nupkg.sha512",
     "C:\\Users\\Administrateur\\.nuget\\packages\\system.reflection.primitives\\4.3.0\\system.reflection.primitives.4.3.0.nupkg.sha512",
+    "C:\\Users\\Administrateur\\.nuget\\packages\\system.resources.extensions\\5.0.0\\system.resources.extensions.5.0.0.nupkg.sha512",
     "C:\\Users\\Administrateur\\.nuget\\packages\\system.runtime\\4.3.0\\system.runtime.4.3.0.nupkg.sha512",
     "C:\\Users\\Administrateur\\.nuget\\packages\\system.runtime.caching\\5.0.0\\system.runtime.caching.5.0.0.nupkg.sha512",
     "C:\\Users\\Administrateur\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
@@ -105,9 +106,9 @@
     "C:\\Users\\Administrateur\\.nuget\\packages\\uipath.documentunderstanding.digitizer\\4.9.4\\uipath.documentunderstanding.digitizer.4.9.4.nupkg.sha512",
     "C:\\Users\\Administrateur\\.nuget\\packages\\uipath.documentunderstanding.digitizer.contracts\\1.1.0\\uipath.documentunderstanding.digitizer.contracts.1.1.0.nupkg.sha512",
     "C:\\Users\\Administrateur\\.nuget\\packages\\uipath.errorinfo\\25.10.2\\uipath.errorinfo.25.10.2.nupkg.sha512",
-    "C:\\Users\\Administrateur\\.nuget\\packages\\uipath.formactivitylibrary.contracts\\1.1.1\\uipath.formactivitylibrary.contracts.1.1.1.nupkg.sha512",
+    "C:\\Users\\Administrateur\\.nuget\\packages\\uipath.formactivitylibrary.contracts\\2.0.7-alpha.4234105\\uipath.formactivitylibrary.contracts.2.0.7-alpha.4234105.nupkg.sha512",
     "C:\\Users\\Administrateur\\.nuget\\packages\\uipath.opentelemetry.contracts\\2.9.1\\uipath.opentelemetry.contracts.2.9.1.nupkg.sha512",
-    "C:\\Users\\Administrateur\\.nuget\\packages\\uipath.persistence.activities\\1.3.1\\uipath.persistence.activities.1.3.1.nupkg.sha512",
+    "C:\\Users\\Administrateur\\.nuget\\packages\\uipath.persistence.activities\\1.5.0\\uipath.persistence.activities.1.5.0.nupkg.sha512",
     "C:\\Users\\Administrateur\\.nuget\\packages\\uipath.platform\\26.4.0\\uipath.platform.26.4.0.nupkg.sha512",
     "C:\\Users\\Administrateur\\.nuget\\packages\\uipath.plugin.activities.tracing\\0.6.3\\uipath.plugin.activities.tracing.0.6.3.nupkg.sha512",
     "C:\\Users\\Administrateur\\.nuget\\packages\\uipath.system.activities\\26.6.0\\uipath.system.activities.26.6.0.nupkg.sha512",
@@ -118,46 +119,5 @@
     "C:\\Users\\Administrateur\\.nuget\\packages\\uipath.webapi.activities\\2.5.1\\uipath.webapi.activities.2.5.1.nupkg.sha512",
     "C:\\Users\\Administrateur\\.nuget\\packages\\uipath.webapi.activities.runtime\\2.5.1\\uipath.webapi.activities.runtime.2.5.1.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1202",
-      "level": "Error",
-      "filePath": "C:\\DEVPOST.Hackathon\\UiPath AgentHack\\UiPath\\Orchestrateur_Final\\.local",
-      "message": "Package UiPath.Persistence.Activities 1.3.1 is not compatible with net8.0 (.NETCoreApp,Version=v8.0). Package UiPath.Persistence.Activities 1.3.1 supports: net461 (.NETFramework,Version=v4.6.1)",
-      "libraryId": "UiPath.Persistence.Activities",
-      "targetGraphs": [
-        "net8.0"
-      ]
-    },
-    {
-      "code": "NU1202",
-      "level": "Error",
-      "filePath": "C:\\DEVPOST.Hackathon\\UiPath AgentHack\\UiPath\\Orchestrateur_Final\\.local",
-      "message": "Package UiPath.FormActivityLibrary.Contracts 1.1.1 is not compatible with net8.0 (.NETCoreApp,Version=v8.0). Package UiPath.FormActivityLibrary.Contracts 1.1.1 supports: net461 (.NETFramework,Version=v4.6.1)",
-      "libraryId": "UiPath.FormActivityLibrary.Contracts",
-      "targetGraphs": [
-        "net8.0"
-      ]
-    },
-    {
-      "code": "NU1202",
-      "level": "Error",
-      "filePath": "C:\\DEVPOST.Hackathon\\UiPath AgentHack\\UiPath\\Orchestrateur_Final\\.local",
-      "message": "Package UiPath.Persistence.Activities 1.3.1 is not compatible with net8.0 (.NETCoreApp,Version=v8.0) / win-x64. Package UiPath.Persistence.Activities 1.3.1 supports: net461 (.NETFramework,Version=v4.6.1)",
-      "libraryId": "UiPath.Persistence.Activities",
-      "targetGraphs": [
-        "net8.0/win-x64"
-      ]
-    },
-    {
-      "code": "NU1202",
-      "level": "Error",
-      "filePath": "C:\\DEVPOST.Hackathon\\UiPath AgentHack\\UiPath\\Orchestrateur_Final\\.local",
-      "message": "Package UiPath.FormActivityLibrary.Contracts 1.1.1 is not compatible with net8.0 (.NETCoreApp,Version=v8.0) / win-x64. Package UiPath.FormActivityLibrary.Contracts 1.1.1 supports: net461 (.NETFramework,Version=v4.6.1)",
-      "libraryId": "UiPath.FormActivityLibrary.Contracts",
-      "targetGraphs": [
-        "net8.0/win-x64"
-      ]
-    }
-  ]
+  "logs": []
 }

@@ -145,7 +145,7 @@ async def validate_endpoint(payload: ValidateRequest):
     try:
         logger.info(f"Déclenchement de la validation pour le script : {payload.script_path}")
         if not os.path.exists(payload.script_path):
-            return JSONResponse(status_code=404, content={"status": "error", "message": "Script not found"})
+            return JSONResponse(status_code=404, content={"status": "error", "message": "Script not found", "logs": "Erreur: Le script de test n'a pas été trouvé (potentiellement dû à l'échec de la génération)."})
             
         result = subprocess.run(["bash", payload.script_path], capture_output=True, text=True, timeout=60)
         logs = f"STDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"

@@ -56,7 +56,7 @@ async def run_remediation_loop(plan: str, incident_id: str = "REQ-DEFAULT") -> d
             "7. Quand la suite de tests est validée par l'outil synthétisé avec un code de retour égal à 0, "
             "terminez IMPÉRATIVEMENT votre message par le mot 'TERMINATE'."
         ),
-        llm_config=custom_llm_config, # Forçage de la config isolée
+        llm_config=llm_config, # Utilise la config chargée dynamiquement (Gemini/OpenAI)
         is_termination_msg=is_terminate,
     )
 
@@ -149,7 +149,7 @@ async def run_external_remediation_loop(incident_id: str, test_logs: str) -> dic
             "5. Votre réponse finale DOIT inclure un bloc JSON valide contenant la clé 'root_cause_analysis' expliquant la correction.\n"
             "6. Terminez par TERMINATE quand tout est corrigé."
         ),
-        llm_config=custom_llm_config,
+        llm_config=llm_config,
         is_termination_msg=is_terminate,
     )
 

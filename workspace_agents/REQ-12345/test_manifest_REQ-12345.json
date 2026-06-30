@@ -1,0 +1,14 @@
+{
+  "incident_id": "REQ-12345",
+  "test_set_name": "QA_Validation_Suite",
+  "execution_mode": "test_cloud",
+  "commands": [
+    {
+      "type": "test",
+      "script": "test.py"
+    }
+  ],
+  "requirements_mapping": [
+    "REQ-12345"
+  ]
+}
