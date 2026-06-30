@@ -1,0 +1,9 @@
+.agents
+C:\DEVPOST.Hackathon\UiPath AgentHack\Autonomous SDLC - Software Development Life Cycle/.env
+C:\DEVPOST.Hackathon\UiPath AgentHack\Autonomous SDLC - Software Development Life Cycle\.agents\
+__pycache__/
+*.pyc
+.pytest_cache/
+*.zip
+*.7z
+.antigravity/.env

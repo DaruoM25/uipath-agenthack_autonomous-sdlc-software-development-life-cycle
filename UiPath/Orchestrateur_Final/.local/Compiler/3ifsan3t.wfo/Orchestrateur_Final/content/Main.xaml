@@ -1,0 +1,481 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Main" sap2010:WorkflowViewState.IdRef="ActivityBuilder_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:uta="clr-namespace:UiPath.Testing.Activities;assembly=UiPath.Testing.Activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>GlobalConstantsNamespace</x:String>
+      <x:String>System.ComponentModel</x:String>
+      <x:String>UiPath.Web</x:String>
+      <x:String>System.Runtime.Serialization</x:String>
+      <x:String>UiPath.Platform.ResourceHandling</x:String>
+      <x:String>System.Security</x:String>
+      <x:String>UiPath.Web.Activities</x:String>
+      <x:String>System.Reflection</x:String>
+      <x:String>System.Linq.Expressions</x:String>
+      <x:String>Newtonsoft.Json.Linq</x:String>
+      <x:String>Newtonsoft.Json</x:String>
+      <x:String>System.Dynamic</x:String>
+      <x:String>UiPath.Testing.Activities</x:String>
+      <x:String>UiPath.Shared.Activities</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Collections</AssemblyReference>
+      <AssemblyReference>System.ComponentModel</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.Configuration.ConfigurationManager</AssemblyReference>
+      <AssemblyReference>System.Console</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Data.Common</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.Memory</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System.Private.Uri</AssemblyReference>
+      <AssemblyReference>System.Reflection.DispatchProxy</AssemblyReference>
+      <AssemblyReference>System.Reflection.Metadata</AssemblyReference>
+      <AssemblyReference>System.Reflection.TypeExtensions</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Primitives</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>UiPath.Studio.Constants</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Web</AssemblyReference>
+      <AssemblyReference>UiPath.Web.Activities</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>Newtonsoft.Json</AssemblyReference>
+      <AssemblyReference>UiPath.Testing.Activities</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="[SDLC] Orchestrateur Autonome - Pipeline Complet" sap:VirtualizedContainerService.HintSize="740.2,1394.4" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="strBaseUrl">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String">https://observant-driven-scrooge.ngrok-free.dev</Literal>
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:String" Name="strEnvironnement">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String">prod</Literal>
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:String" Default="REQ-12345" Name="strIncidentId" />
+      <Variable x:TypeArguments="x:String" Default="Déployer LedgerHub (Next.js 16) sur Vercel avec intégration AWS DynamoDB" Name="strPrompt" />
+      <Variable x:TypeArguments="x:String" Name="strPayloadAnalyze" />
+      <Variable x:TypeArguments="x:String" Name="strPayloadGenerate" />
+      <Variable x:TypeArguments="x:String" Name="strPayloadValidate" />
+      <Variable x:TypeArguments="x:String" Name="strPayloadRemediate" />
+      <Variable x:TypeArguments="x:String" Name="strResponseAnalyze" />
+      <Variable x:TypeArguments="x:String" Name="strResponseGenerate" />
+      <Variable x:TypeArguments="x:String" Name="strResponseValidate" />
+      <Variable x:TypeArguments="x:String" Name="strResponseRemediate" />
+      <Variable x:TypeArguments="x:String" Name="strPlan">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String" Value="" />
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:String" Name="strDockerfile">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String" Value="" />
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:String" Name="strValidationStatus">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String" Value="" />
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:String" Name="strValidationLogs">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String" Value="" />
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:String" Name="strRemediationStatus">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String" Value="" />
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:String" Name="strRemediationFixedCode">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String" Value="" />
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:String" Default="Result" Name="strOutputDir" />
+      <Variable x:TypeArguments="x:String" Default="Result\Rapport_Conformite_Track3.md" Name="strRapportPath" />
+      <Variable x:TypeArguments="x:String" Default="Result\Dockerfile.md" Name="strDockerfilePath" />
+      <Variable x:TypeArguments="x:Boolean" Default="False" Name="boolValidationSuccess" />
+      <Variable x:TypeArguments="x:Int32" Default="0" Name="intStatusCode" />
+      <Variable x:TypeArguments="x:Object" Name="objDirInfo" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <ui:LogMessage DisplayName="[LOG] Demarrage Pipeline SDLC" sap:VirtualizedContainerService.HintSize="480,48" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;=== SDLC Pipeline Demarre === | Incident=&quot; &amp; strIncidentId &amp; &quot; | Env=&quot; &amp; strEnvironnement]">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:LogMessage>
+    <Assign DisplayName="[INIT] Creer dossier Result" sap:VirtualizedContainerService.HintSize="480,48" sap2010:WorkflowViewState.IdRef="Assign_1">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Object">[objDirInfo]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Object">[System.IO.Directory.CreateDirectory(strOutputDir)]</InArgument>
+      </Assign.Value>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </Assign>
+    <TryCatch DisplayName="[TRY] Etape 1 - POST /analyze" sap:VirtualizedContainerService.HintSize="480,499.2" sap2010:WorkflowViewState.IdRef="TryCatch_1">
+      <TryCatch.Try>
+        <Sequence DisplayName="[SEQ] Analyse" sap:VirtualizedContainerService.HintSize="480,240" sap2010:WorkflowViewState.IdRef="Sequence_2">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign DisplayName="[ASSIGN] Payload /analyze" sap:VirtualizedContainerService.HintSize="449.6,48" sap2010:WorkflowViewState.IdRef="Assign_2">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[strPayloadAnalyze]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[Newtonsoft.Json.JsonConvert.SerializeObject(New Dictionary(Of String, Object) From {{"prompt", strPrompt}, {"risk_level", "High"}, {"environment", strEnvironnement}})]</InArgument>
+            </Assign.Value>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </Assign>
+          <ui:HttpClient ClientCertificate="{x:Null}" ClientCertificatePassword="{x:Null}" ConsumerKey="{x:Null}" ConsumerSecret="{x:Null}" ContinueOnError="{x:Null}" FileAttachments="{x:Null}" OAuth1Token="{x:Null}" OAuth1TokenSecret="{x:Null}" OAuth2Token="{x:Null}" Password="{x:Null}" ResourcePath="{x:Null}" ResponseAttachment="{x:Null}" ResponseHeaders="{x:Null}" SecureClientCertificatePassword="{x:Null}" SecurePassword="{x:Null}" Username="{x:Null}" AcceptFormat="JSON" AuthenticationType="None" Body="[strPayloadAnalyze]" BodyFormat="application/json" DisplayName="[HTTP] POST /analyze" EnableSSLVerification="True" EndPoint="[strBaseUrl &amp; &quot;/analyze&quot;]" sap:VirtualizedContainerService.HintSize="449.6,48" sap2010:WorkflowViewState.IdRef="HttpClient_1" Method="POST" Result="[strResponseAnalyze]" StatusCode="[intStatusCode]" TimeoutMS="300000">
+            <ui:HttpClient.Attachments>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.Attachments>
+            <ui:HttpClient.Cookies>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.Cookies>
+            <ui:HttpClient.Headers>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.Headers>
+            <ui:HttpClient.Parameters>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.Parameters>
+            <ui:HttpClient.UrlSegments>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.UrlSegments>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:HttpClient>
+          <Assign DisplayName="[ASSIGN] Extract Plan" sap:VirtualizedContainerService.HintSize="449.6,48" sap2010:WorkflowViewState.IdRef="Assign_3">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[strPlan]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[If(String.IsNullOrWhiteSpace(strResponseAnalyze), "(reponse vide)", Convert.ToString(Newtonsoft.Json.JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(strResponseAnalyze)("plan")))]</InArgument>
+            </Assign.Value>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </Assign>
+          <ui:WriteTextFile File="{x:Null}" Output="{x:Null}" DisplayName="[IO] Ecrire Rapport" FileName="[strRapportPath]" sap:VirtualizedContainerService.HintSize="449.6,48" sap2010:WorkflowViewState.IdRef="WriteTextFile_1" Text="[&quot;# Rapport de Conformite&quot; &amp; Environment.NewLine &amp; strPlan]">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:WriteTextFile>
+        </Sequence>
+      </TryCatch.Try>
+      <TryCatch.Catches>
+        <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch`1_1">
+          <ActivityAction x:TypeArguments="s:Exception">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="s:Exception" Name="ex" />
+            </ActivityAction.Argument>
+            <ui:LogMessage sap:VirtualizedContainerService.HintSize="480,24" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Error" Message="[&quot;Erreur Etape 1: &quot; &amp; ex.Message]">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+            </ui:LogMessage>
+          </ActivityAction>
+        </Catch>
+      </TryCatch.Catches>
+    </TryCatch>
+    <TryCatch DisplayName="[TRY] Etape 4 - POST /generate-artifacts" sap:VirtualizedContainerService.HintSize="480,419.2" sap2010:WorkflowViewState.IdRef="TryCatch_2">
+      <TryCatch.Try>
+        <Sequence DisplayName="[SEQ] Generation" sap:VirtualizedContainerService.HintSize="480,240" sap2010:WorkflowViewState.IdRef="Sequence_3">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign DisplayName="[ASSIGN] Payload /generate-artifacts" sap:VirtualizedContainerService.HintSize="449.6,48" sap2010:WorkflowViewState.IdRef="Assign_4">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[strPayloadGenerate]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[Newtonsoft.Json.JsonConvert.SerializeObject(New Dictionary(Of String, Object) From {{"plan", strPlan}, {"incident_id", strIncidentId}})]</InArgument>
+            </Assign.Value>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </Assign>
+          <ui:HttpClient ClientCertificate="{x:Null}" ClientCertificatePassword="{x:Null}" ConsumerKey="{x:Null}" ConsumerSecret="{x:Null}" ContinueOnError="{x:Null}" FileAttachments="{x:Null}" OAuth1Token="{x:Null}" OAuth1TokenSecret="{x:Null}" OAuth2Token="{x:Null}" Password="{x:Null}" ResourcePath="{x:Null}" ResponseAttachment="{x:Null}" ResponseHeaders="{x:Null}" SecureClientCertificatePassword="{x:Null}" SecurePassword="{x:Null}" Username="{x:Null}" AcceptFormat="JSON" AuthenticationType="None" Body="[strPayloadGenerate]" BodyFormat="application/json" DisplayName="[HTTP] POST /generate-artifacts" EnableSSLVerification="True" EndPoint="[strBaseUrl &amp; &quot;/generate-artifacts&quot;]" sap:VirtualizedContainerService.HintSize="449.6,48" sap2010:WorkflowViewState.IdRef="HttpClient_2" Method="POST" Result="[strResponseGenerate]" StatusCode="[intStatusCode]" TimeoutMS="300000">
+            <ui:HttpClient.Attachments>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.Attachments>
+            <ui:HttpClient.Cookies>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.Cookies>
+            <ui:HttpClient.Headers>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.Headers>
+            <ui:HttpClient.Parameters>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.Parameters>
+            <ui:HttpClient.UrlSegments>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.UrlSegments>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:HttpClient>
+          <Assign DisplayName="[ASSIGN] Extract Dockerfile" sap:VirtualizedContainerService.HintSize="449.6,48" sap2010:WorkflowViewState.IdRef="Assign_5">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[strDockerfile]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[If(String.IsNullOrWhiteSpace(strResponseGenerate), "(reponse vide)", Convert.ToString(Newtonsoft.Json.JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(strResponseGenerate)("dockerfile")))]</InArgument>
+            </Assign.Value>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </Assign>
+          <ui:WriteTextFile File="{x:Null}" Output="{x:Null}" DisplayName="[IO] Ecrire Dockerfile" FileName="[strDockerfilePath]" sap:VirtualizedContainerService.HintSize="449.6,48" sap2010:WorkflowViewState.IdRef="WriteTextFile_2" Text="[strDockerfile]">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:WriteTextFile>
+        </Sequence>
+      </TryCatch.Try>
+      <TryCatch.Catches>
+        <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch`1_2">
+          <ActivityAction x:TypeArguments="s:Exception">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="s:Exception" Name="ex" />
+            </ActivityAction.Argument>
+            <ui:LogMessage sap2010:WorkflowViewState.IdRef="LogMessage_4" Level="Error" Message="[&quot;Erreur Etape 4: &quot; &amp; ex.Message]" />
+          </ActivityAction>
+        </Catch>
+      </TryCatch.Catches>
+    </TryCatch>
+    <TryCatch DisplayName="[TRY] Etape 5 - POST /validate" sap:VirtualizedContainerService.HintSize="480,175.2" sap2010:WorkflowViewState.IdRef="TryCatch_3">
+      <TryCatch.Try>
+        <Sequence DisplayName="[SEQ] Validation" sap2010:WorkflowViewState.IdRef="Sequence_4">
+          <Assign DisplayName="[ASSIGN] Payload /validate" sap2010:WorkflowViewState.IdRef="Assign_6">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[strPayloadValidate]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[Newtonsoft.Json.JsonConvert.SerializeObject(New Dictionary(Of String, Object) From {{"script_path", "/workspace_agents/" &amp; strIncidentId &amp; "/test.sh"}})]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <ui:HttpClient ClientCertificate="{x:Null}" ClientCertificatePassword="{x:Null}" ConsumerKey="{x:Null}" ConsumerSecret="{x:Null}" ContinueOnError="{x:Null}" FileAttachments="{x:Null}" OAuth1Token="{x:Null}" OAuth1TokenSecret="{x:Null}" OAuth2Token="{x:Null}" Password="{x:Null}" ResourcePath="{x:Null}" ResponseAttachment="{x:Null}" ResponseHeaders="{x:Null}" SecureClientCertificatePassword="{x:Null}" SecurePassword="{x:Null}" Username="{x:Null}" AcceptFormat="JSON" AuthenticationType="None" Body="[strPayloadValidate]" BodyFormat="application/json" DisplayName="[HTTP] POST /validate" EnableSSLVerification="True" EndPoint="[strBaseUrl &amp; &quot;/validate&quot;]" sap2010:WorkflowViewState.IdRef="HttpClient_3" Method="POST" Result="[strResponseValidate]" StatusCode="[intStatusCode]" TimeoutMS="300000">
+            <ui:HttpClient.Attachments>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.Attachments>
+            <ui:HttpClient.Cookies>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.Cookies>
+            <ui:HttpClient.Headers>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.Headers>
+            <ui:HttpClient.Parameters>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.Parameters>
+            <ui:HttpClient.UrlSegments>
+              <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+            </ui:HttpClient.UrlSegments>
+          </ui:HttpClient>
+          <Assign DisplayName="[ASSIGN] Extract Status" sap2010:WorkflowViewState.IdRef="Assign_7">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[strValidationStatus]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[If(String.IsNullOrWhiteSpace(strResponseValidate), "UNKNOWN", Convert.ToString(Newtonsoft.Json.JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(strResponseValidate)("status")).ToUpper())]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="[ASSIGN] Extract Logs" sap2010:WorkflowViewState.IdRef="Assign_8">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[strValidationLogs]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[If(String.IsNullOrWhiteSpace(strResponseValidate), "", Convert.ToString(Newtonsoft.Json.JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(strResponseValidate)("logs")))]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="[ASSIGN] Success Boolean" sap2010:WorkflowViewState.IdRef="Assign_9">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[boolValidationSuccess]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">[strValidationStatus.Equals("SUCCESS") OrElse strValidationStatus.Equals("PASSED")]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <uta:VerifyExpression AlternativeVerificationTitle="{x:Null}" KeepScreenshots="{x:Null}" OutputMessageFormat="{x:Null}" Result="{x:Null}" ScreenshotsPath="{x:Null}" ContinueOnFailure="True" DisplayName="[ASSERT] Verify Success" Expression="[boolValidationSuccess]" sap2010:WorkflowViewState.IdRef="VerifyExpression_1" TakeScreenshotInCaseOfFailingAssertion="False" TakeScreenshotInCaseOfSucceedingAssertion="False" />
+        </Sequence>
+      </TryCatch.Try>
+      <TryCatch.Catches>
+        <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch`1_3">
+          <ActivityAction x:TypeArguments="s:Exception">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="s:Exception" Name="ex" />
+            </ActivityAction.Argument>
+            <Sequence DisplayName="Catch Block" sap2010:WorkflowViewState.IdRef="Sequence_5">
+              <Assign DisplayName="Force False" sap2010:WorkflowViewState.IdRef="Assign_10">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Boolean">[boolValidationSuccess]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Boolean">[False]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign DisplayName="Logs Exception" sap2010:WorkflowViewState.IdRef="Assign_11">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:String">[strValidationLogs]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:String">[ex.Message]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </Sequence>
+          </ActivityAction>
+        </Catch>
+      </TryCatch.Catches>
+    </TryCatch>
+    <If Condition="[Not boolValidationSuccess]" DisplayName="[IF] Validation echouee ?" sap:VirtualizedContainerService.HintSize="480,132.8" sap2010:WorkflowViewState.IdRef="If_1">
+      <If.Then>
+        <TryCatch DisplayName="[TRY] Remediation - POST /remediate" sap2010:WorkflowViewState.IdRef="TryCatch_4">
+          <TryCatch.Try>
+            <Sequence DisplayName="[SEQ] Auto-Remediation" sap2010:WorkflowViewState.IdRef="Sequence_6">
+              <Assign DisplayName="[ASSIGN] Payload /remediate" sap2010:WorkflowViewState.IdRef="Assign_12">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:String">[strPayloadRemediate]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:String">[Newtonsoft.Json.JsonConvert.SerializeObject(New Dictionary(Of String, Object) From {{"incident_id", strIncidentId}, {"logs", strValidationLogs}})]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <ui:HttpClient ClientCertificate="{x:Null}" ClientCertificatePassword="{x:Null}" ConsumerKey="{x:Null}" ConsumerSecret="{x:Null}" ContinueOnError="{x:Null}" FileAttachments="{x:Null}" OAuth1Token="{x:Null}" OAuth1TokenSecret="{x:Null}" OAuth2Token="{x:Null}" Password="{x:Null}" ResourcePath="{x:Null}" ResponseAttachment="{x:Null}" ResponseHeaders="{x:Null}" SecureClientCertificatePassword="{x:Null}" SecurePassword="{x:Null}" Username="{x:Null}" AcceptFormat="JSON" AuthenticationType="None" Body="[strPayloadRemediate]" BodyFormat="application/json" DisplayName="[HTTP] POST /remediate" EnableSSLVerification="True" EndPoint="[strBaseUrl &amp; &quot;/remediate&quot;]" sap2010:WorkflowViewState.IdRef="HttpClient_4" Method="POST" Result="[strResponseRemediate]" StatusCode="[intStatusCode]" TimeoutMS="300000">
+                <ui:HttpClient.Attachments>
+                  <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+                </ui:HttpClient.Attachments>
+                <ui:HttpClient.Cookies>
+                  <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+                </ui:HttpClient.Cookies>
+                <ui:HttpClient.Headers>
+                  <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+                </ui:HttpClient.Headers>
+                <ui:HttpClient.Parameters>
+                  <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+                </ui:HttpClient.Parameters>
+                <ui:HttpClient.UrlSegments>
+                  <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+                </ui:HttpClient.UrlSegments>
+              </ui:HttpClient>
+              <Assign DisplayName="[ASSIGN] Extract Remediation Status" sap2010:WorkflowViewState.IdRef="Assign_13">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:String">[strRemediationStatus]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:String">[If(String.IsNullOrWhiteSpace(strResponseRemediate), "UNKNOWN", Convert.ToString(Newtonsoft.Json.JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(strResponseRemediate)("status")))]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign DisplayName="[ASSIGN] Extract FixedCode" sap2010:WorkflowViewState.IdRef="Assign_14">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:String">[strRemediationFixedCode]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:String">[If(String.IsNullOrWhiteSpace(strResponseRemediate), "", Convert.ToString(Newtonsoft.Json.JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(strResponseRemediate)("fixed_code")))]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <ui:WriteTextFile File="{x:Null}" Output="{x:Null}" DisplayName="[IO] Ecrire Fixed Code" FileName="[&quot;Result\Fixed_Code_&quot; &amp; strIncidentId &amp; &quot;.md&quot;]" sap2010:WorkflowViewState.IdRef="WriteTextFile_3" Text="[strRemediationFixedCode]" />
+            </Sequence>
+          </TryCatch.Try>
+          <TryCatch.Catches>
+            <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch`1_4">
+              <ActivityAction x:TypeArguments="s:Exception">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="s:Exception" Name="ex" />
+                </ActivityAction.Argument>
+                <ui:LogMessage sap2010:WorkflowViewState.IdRef="LogMessage_5" Level="Error" Message="[&quot;Erreur /remediate: &quot; &amp; ex.Message]" />
+              </ActivityAction>
+            </Catch>
+          </TryCatch.Catches>
+        </TryCatch>
+      </If.Then>
+      <If.Else>
+        <Sequence DisplayName="Else" sap2010:WorkflowViewState.IdRef="Sequence_7" />
+      </If.Else>
+    </If>
+    <ui:LogMessage DisplayName="[LOG] Bilan" sap:VirtualizedContainerService.HintSize="480,48" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Info" Message="[&quot;=== BILAN SDLC === Validation OK : &quot; &amp; boolValidationSuccess.ToString()]">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:LogMessage>
+  </Sequence>
+</Activity>

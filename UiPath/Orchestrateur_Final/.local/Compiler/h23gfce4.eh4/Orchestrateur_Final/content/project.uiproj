@@ -1,0 +1,6 @@
+{
+  "Name": "Orchestrateur_Final",
+  "ProjectType": "Process",
+  "Description": "Processus vierge",
+  "MainFile": "Main.xaml"
+}

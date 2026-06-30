@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pyautogen==0.2.35
+crewai
+langchain
+langchain-google-genai
+langchain-openai
+python-dotenv
+pyngrok
+pytest
+httpx
+google-generativeai
+litellm

@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ollama-pull-model:
+    image: ollama/ollama:latest
+    container_name: ollama-pull-model
+    environment:
+      - OLLAMA_HOST=ollama:11434
+    # On utilise "pull" pour télécharger proprement le modèle sans le lancer interactivement.
+    command: pull qwen2.5-coder:7b
+    depends_on:
+      ollama:
+        condition: service_healthy
+    restart: on-failure
+
+volumes:
+  ollama_data:

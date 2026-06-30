@@ -1,0 +1,847 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ╔══════════════════════════════════════════════════════════════════════════════╗
+  ║  Autonomous SDLC Orchestrator – Main.xaml                                  ║
+  ║  Langage : VB.NET                                                           ║
+  ║  Généré pour : UiPath Studio 2023.10+ / UiPath.UIAutomation.Activities     ║
+  ║  API cible  : http://localhost:8000  (FastAPI Autonomous SDLC)              ║
+  ║                                                                             ║
+  ║  IMPORTANT : Les propriétés complexes (Body, InArgument, OutArgument)      ║
+  ║  sont TOUJOURS exprimées en balises imbriquées pour éviter l'erreur        ║
+  ║  "Invalid TypeConverter usage" du compilateur UiPath.                      ║
+  ╚══════════════════════════════════════════════════════════════════════════════╝
+-->
+<Activity
+  mc:Ignorable="sap sap2010 sads"
+  x:Class="AutonomousSDLC.Main"
+  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
+  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
+  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+  xmlns:ui="clr-namespace:UiPath.WebAPI.Activities;assembly=UiPath.WebAPI.Activities"
+  xmlns:uta="clr-namespace:UiPath.Testing.Activities;assembly=UiPath.Testing.Activities"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:ui2="clr-namespace:UiPath.Core.Activities;assembly=UiPath.Core.Activities">
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       IMPORTS DE NAMESPACES
+       ═══════════════════════════════════════════════════════════════ -->
+  <x:Members>
+    <x:Property Name="in_strIncidentId"  Type="InArgument(x:String)" />
+    <x:Property Name="in_strEnvironment" Type="InArgument(x:String)" />
+    <x:Property Name="in_strPrompt"      Type="InArgument(x:String)" />
+  </x:Members>
+
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="16">
+      <x:String>System</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>Newtonsoft.Json</x:String>
+      <x:String>Newtonsoft.Json.Linq</x:String>
+      <x:String>System.Text</x:String>
+      <x:String>System.Net.Http</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CORPS PRINCIPAL DE LA SÉQUENCE
+       ═══════════════════════════════════════════════════════════════ -->
+  <Sequence DisplayName="[SDLC] Orchestrateur Autonome – Pipeline Complet" sap:VirtualizedContainerService.HintSize="900,1200">
+    <Sequence.Variables>
+      <!-- ── Configuration globale ───────────────────────────── -->
+      <Variable Name="strBaseUrl"          Type="x:String"  Default="&quot;http://localhost:8000&quot;" />
+      <Variable Name="strEnvironnement"    Type="x:String"  Default="&quot;dev&quot;" />
+      <Variable Name="strIncidentId"       Type="x:String"  Default="&quot;REQ-12345&quot;" />
+      <Variable Name="strPrompt"           Type="x:String"  Default="&quot;Deploy a secure Node.js application on Docker with CI/CD.&quot;" />
+
+      <!-- ── Payloads JSON (sérialisation manuelle VB.NET) ─────── -->
+      <Variable Name="strPayloadAnalyze"         Type="x:String" />
+      <Variable Name="strPayloadGenerate"        Type="x:String" />
+      <Variable Name="strPayloadValidate"        Type="x:String" />
+      <Variable Name="strPayloadRemediate"       Type="x:String" />
+
+      <!-- ── Réponses brutes HTTP (String) ─────────────────────── -->
+      <Variable Name="strResponseAnalyze"        Type="x:String" />
+      <Variable Name="strResponseGenerate"       Type="x:String" />
+      <Variable Name="strResponseValidate"       Type="x:String" />
+      <Variable Name="strResponseRemediate"      Type="x:String" />
+
+      <!-- ── Objets JSON désérialisés (JObject) ─────────────────── -->
+      <Variable Name="jobjAnalyze"               Type="Newtonsoft.Json.Linq.JObject" />
+      <Variable Name="jobjGenerate"              Type="Newtonsoft.Json.Linq.JObject" />
+      <Variable Name="jobjValidate"              Type="Newtonsoft.Json.Linq.JObject" />
+      <Variable Name="jobjRemediate"             Type="Newtonsoft.Json.Linq.JObject" />
+
+      <!-- ── Champs extraits ─────────────────────────────────────── -->
+      <Variable Name="strPlan"                   Type="x:String" />
+      <Variable Name="strDockerfile"             Type="x:String" />
+      <Variable Name="strValidationStatus"       Type="x:String" />
+      <Variable Name="strValidationLogs"         Type="x:String" />
+      <Variable Name="strRemediationStatus"      Type="x:String" />
+      <Variable Name="strRemediationFixedCode"   Type="x:String" />
+
+      <!-- ── Chemins de sortie ─────────────────────────────────── -->
+      <Variable Name="strOutputDir"              Type="x:String"  Default="&quot;Result&quot;" />
+      <Variable Name="strRapportPath"            Type="x:String"  Default="&quot;Result\Rapport_Conformite_Track3.md&quot;" />
+      <Variable Name="strDockerfilePath"         Type="x:String"  Default="&quot;Result\Dockerfile.md&quot;" />
+
+      <!-- ── Contrôle de flux ──────────────────────────────────── -->
+      <Variable Name="boolValidationSuccess"     Type="x:Boolean" Default="False" />
+      <Variable Name="strCurrentException"       Type="x:String" />
+      <Variable Name="intStatusCode"             Type="x:Int32"  Default="0" />
+    </Sequence.Variables>
+
+    <!-- ════════════════════════════════════════════════════════════
+         LOG : Démarrage du pipeline
+         ════════════════════════════════════════════════════════════ -->
+    <ui2:LogMessage DisplayName="[LOG] Démarrage Pipeline SDLC Autonome" Level="Information">
+      <ui2:LogMessage.Message>
+        <InArgument x:TypeArguments="x:String">
+          <VisualBasicValue x:TypeArguments="x:String">
+            <![CDATA["═══ SDLC Orchestrateur Démarré ═══ | IncidentId=" & strIncidentId & " | Env=" & strEnvironnement & " | " & DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")]]>
+          </VisualBasicValue>
+        </InArgument>
+      </ui2:LogMessage.Message>
+    </ui2:LogMessage>
+
+    <!-- ════════════════════════════════════════════════════════════
+         INITIALISATION : Dossier de sortie
+         ════════════════════════════════════════════════════════════ -->
+    <If DisplayName="[INIT] Créer dossier Result si absent" Condition="[Not System.IO.Directory.Exists(strOutputDir)]">
+      <If.Then>
+        <Sequence>
+          <ui2:InvokeMethod DisplayName="[IO] CreateDirectory" MethodName="CreateDirectory" TargetType="[GetType(System.IO.Directory)]">
+            <ui2:InvokeMethod.Parameters>
+              <InArgument x:TypeArguments="x:String">[strOutputDir]</InArgument>
+            </ui2:InvokeMethod.Parameters>
+          </ui2:InvokeMethod>
+          <ui2:LogMessage DisplayName="[LOG] Dossier Result créé" Level="Information">
+            <ui2:LogMessage.Message>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA["[IO] Dossier créé : " & strOutputDir]]>
+                </VisualBasicValue>
+              </InArgument>
+            </ui2:LogMessage.Message>
+          </ui2:LogMessage>
+        </Sequence>
+      </If.Then>
+    </If>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         ÉTAPE 1 – Appel POST /analyze
+         Payload : { "prompt": "...", "risk_level": "High", "environment": "dev" }
+         Réponse : { "plan": "..." }
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <TryCatch DisplayName="[TRY] Étape 1 – POST /analyze">
+      <TryCatch.Try>
+        <Sequence DisplayName="[SEQ] Analyse et Planification">
+
+          <!-- Sérialisation du payload -->
+          <Assign DisplayName="[ASSIGN] Payload /analyze">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[strPayloadAnalyze]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA[Newtonsoft.Json.JsonConvert.SerializeObject(New Dictionary(Of String, Object) From {
+                    {"prompt", strPrompt},
+                    {"risk_level", "High"},
+                    {"environment", strEnvironnement}
+                  })]]>
+                </VisualBasicValue>
+              </InArgument>
+            </Assign.Value>
+          </Assign>
+
+          <ui2:LogMessage DisplayName="[LOG] Appel /analyze" Level="Information">
+            <ui2:LogMessage.Message>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA["[API] POST " & strBaseUrl & "/analyze | Payload=" & strPayloadAnalyze]]>
+                </VisualBasicValue>
+              </InArgument>
+            </ui2:LogMessage.Message>
+          </ui2:LogMessage>
+
+          <!-- Appel HTTP POST /analyze
+               CRITIQUE : Body et Result utilisent des balises imbriquées -->
+          <ui:HttpClient DisplayName="[HTTP] POST /analyze"
+                         EndPoint="[strBaseUrl &amp; &quot;/analyze&quot;]"
+                         Method="POST"
+                         AcceptFormat="JSON"
+                         ContentType="application/json">
+            <ui:HttpClient.Body>
+              <InArgument x:TypeArguments="x:String">[strPayloadAnalyze]</InArgument>
+            </ui:HttpClient.Body>
+            <ui:HttpClient.Result>
+              <OutArgument x:TypeArguments="x:String">[strResponseAnalyze]</OutArgument>
+            </ui:HttpClient.Result>
+            <ui:HttpClient.StatusCode>
+              <OutArgument x:TypeArguments="x:Int32">[intStatusCode]</OutArgument>
+            </ui:HttpClient.StatusCode>
+          </ui:HttpClient>
+
+          <ui2:LogMessage DisplayName="[LOG] Réponse /analyze" Level="Information">
+            <ui2:LogMessage.Message>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA["[API] /analyze – HTTP " & intStatusCode.ToString() & " | Réponse=" & strResponseAnalyze.Substring(0, Math.Min(200, strResponseAnalyze.Length))]]>
+                </VisualBasicValue>
+              </InArgument>
+            </ui2:LogMessage.Message>
+          </ui2:LogMessage>
+
+          <!-- Désérialisation JSON → JObject -->
+          <ui:DeserializeJson DisplayName="[JSON] Désérialiser réponse /analyze">
+            <ui:DeserializeJson.JsonString>
+              <InArgument x:TypeArguments="x:String">[strResponseAnalyze]</InArgument>
+            </ui:DeserializeJson.JsonString>
+            <ui:DeserializeJson.Result>
+              <OutArgument x:TypeArguments="Newtonsoft.Json.Linq.JObject">[jobjAnalyze]</OutArgument>
+            </ui:DeserializeJson.Result>
+          </ui:DeserializeJson>
+
+          <!-- Extraire le champ "plan" du JObject -->
+          <Assign DisplayName="[ASSIGN] Extraire strPlan depuis JObject">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[strPlan]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA[If(jobjAnalyze("plan") IsNot Nothing, jobjAnalyze("plan").ToString(), "(plan vide)")]]>
+                </VisualBasicValue>
+              </InArgument>
+            </Assign.Value>
+          </Assign>
+
+          <ui2:LogMessage DisplayName="[LOG] Plan extrait (aperçu)" Level="Information">
+            <ui2:LogMessage.Message>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA["[JSON] Plan extrait – " & strPlan.Length.ToString() & " caractères. Aperçu : " & strPlan.Substring(0, Math.Min(300, strPlan.Length))]]>
+                </VisualBasicValue>
+              </InArgument>
+            </ui2:LogMessage.Message>
+          </ui2:LogMessage>
+
+          <!-- ── ÉTAPE 3 : Sauvegarde Rapport Markdown ── -->
+          <ui2:WriteTextFile DisplayName="[IO] Sauvegarder Rapport_Conformite_Track3.md" Append="False" Encoding="[System.Text.Encoding.UTF8]">
+            <ui2:WriteTextFile.FileName>
+              <InArgument x:TypeArguments="x:String">[strRapportPath]</InArgument>
+            </ui2:WriteTextFile.FileName>
+            <ui2:WriteTextFile.Text>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA["# Rapport de Conformité – Track 3" & Environment.NewLine &
+"**Date :** " & DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") & Environment.NewLine &
+"**Incident :** " & strIncidentId & Environment.NewLine &
+"**Environnement :** " & strEnvironnement & Environment.NewLine & Environment.NewLine &
+"---" & Environment.NewLine & Environment.NewLine &
+"## Plan d'Architecture Technique" & Environment.NewLine & Environment.NewLine &
+strPlan]]>
+                </VisualBasicValue>
+              </InArgument>
+            </ui2:WriteTextFile.Text>
+          </ui2:WriteTextFile>
+
+          <ui2:LogMessage DisplayName="[LOG] Rapport sauvegardé" Level="Information">
+            <ui2:LogMessage.Message>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA["[IO] Fichier écrit : " & strRapportPath]]>
+                </VisualBasicValue>
+              </InArgument>
+            </ui2:LogMessage.Message>
+          </ui2:LogMessage>
+
+        </Sequence>
+      </TryCatch.Try>
+      <TryCatch.Catches>
+        <Catch x:TypeArguments="Exception">
+          <ActivityAction x:TypeArguments="Exception">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="Exception" Name="exAnalyze" />
+            </ActivityAction.Argument>
+            <Sequence DisplayName="[CATCH] Erreur Étape 1 /analyze">
+              <Assign DisplayName="[ASSIGN] Capturer message exception">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:String">[strCurrentException]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:String">[exAnalyze.Message]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <ui2:LogMessage DisplayName="[LOG] ⚠ Erreur /analyze" Level="Error">
+                <ui2:LogMessage.Message>
+                  <InArgument x:TypeArguments="x:String">
+                    <VisualBasicValue x:TypeArguments="x:String">
+                      <![CDATA["[ERROR] Étape 1 /analyze ÉCHOUÉ | Exception : " & exAnalyze.GetType().Name & " – " & exAnalyze.Message & " | StackTrace : " & exAnalyze.StackTrace]]>
+                    </VisualBasicValue>
+                  </InArgument>
+                </ui2:LogMessage.Message>
+              </ui2:LogMessage>
+              <Throw DisplayName="[THROW] Re-lancer exception critique">
+                <Throw.Exception>
+                  <InArgument x:TypeArguments="Exception">
+                    <VisualBasicValue x:TypeArguments="Exception">[New ApplicationException("[SDLC-STEP1] Échec /analyze : " &amp; exAnalyze.Message, exAnalyze)]</VisualBasicValue>
+                  </InArgument>
+                </Throw.Exception>
+              </Throw>
+            </Sequence>
+          </ActivityAction>
+        </Catch>
+      </TryCatch.Catches>
+    </TryCatch>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         ÉTAPE 4 – Appel POST /generate-artifacts
+         Payload : { "plan": "...", "incident_id": "..." }
+         Réponse : { "dockerfile": "..." }
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <TryCatch DisplayName="[TRY] Étape 4 – POST /generate-artifacts">
+      <TryCatch.Try>
+        <Sequence DisplayName="[SEQ] Génération des Artefacts">
+
+          <Assign DisplayName="[ASSIGN] Payload /generate-artifacts">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[strPayloadGenerate]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA[Newtonsoft.Json.JsonConvert.SerializeObject(New Dictionary(Of String, Object) From {
+                    {"plan", strPlan},
+                    {"incident_id", strIncidentId}
+                  })]]>
+                </VisualBasicValue>
+              </InArgument>
+            </Assign.Value>
+          </Assign>
+
+          <ui2:LogMessage DisplayName="[LOG] Appel /generate-artifacts" Level="Information">
+            <ui2:LogMessage.Message>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA["[API] POST " & strBaseUrl & "/generate-artifacts | IncidentId=" & strIncidentId]]>
+                </VisualBasicValue>
+              </InArgument>
+            </ui2:LogMessage.Message>
+          </ui2:LogMessage>
+
+          <ui:HttpClient DisplayName="[HTTP] POST /generate-artifacts"
+                         EndPoint="[strBaseUrl &amp; &quot;/generate-artifacts&quot;]"
+                         Method="POST"
+                         AcceptFormat="JSON"
+                         ContentType="application/json">
+            <ui:HttpClient.Body>
+              <InArgument x:TypeArguments="x:String">[strPayloadGenerate]</InArgument>
+            </ui:HttpClient.Body>
+            <ui:HttpClient.Result>
+              <OutArgument x:TypeArguments="x:String">[strResponseGenerate]</OutArgument>
+            </ui:HttpClient.Result>
+            <ui:HttpClient.StatusCode>
+              <OutArgument x:TypeArguments="x:Int32">[intStatusCode]</OutArgument>
+            </ui:HttpClient.StatusCode>
+          </ui:HttpClient>
+
+          <ui2:LogMessage DisplayName="[LOG] Réponse /generate-artifacts" Level="Information">
+            <ui2:LogMessage.Message>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA["[API] /generate-artifacts – HTTP " & intStatusCode.ToString()]]>
+                </VisualBasicValue>
+              </InArgument>
+            </ui2:LogMessage.Message>
+          </ui2:LogMessage>
+
+          <ui:DeserializeJson DisplayName="[JSON] Désérialiser réponse /generate-artifacts">
+            <ui:DeserializeJson.JsonString>
+              <InArgument x:TypeArguments="x:String">[strResponseGenerate]</InArgument>
+            </ui:DeserializeJson.JsonString>
+            <ui:DeserializeJson.Result>
+              <OutArgument x:TypeArguments="Newtonsoft.Json.Linq.JObject">[jobjGenerate]</OutArgument>
+            </ui:DeserializeJson.Result>
+          </ui:DeserializeJson>
+
+          <Assign DisplayName="[ASSIGN] Extraire strDockerfile depuis JObject">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[strDockerfile]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA[If(jobjGenerate("dockerfile") IsNot Nothing,
+                    jobjGenerate("dockerfile").ToString(),
+                    jobjGenerate.ToString())]]>
+                </VisualBasicValue>
+              </InArgument>
+            </Assign.Value>
+          </Assign>
+
+          <!-- Sauvegarde Dockerfile.md -->
+          <ui2:WriteTextFile DisplayName="[IO] Sauvegarder Dockerfile.md" Append="False" Encoding="[System.Text.Encoding.UTF8]">
+            <ui2:WriteTextFile.FileName>
+              <InArgument x:TypeArguments="x:String">[strDockerfilePath]</InArgument>
+            </ui2:WriteTextFile.FileName>
+            <ui2:WriteTextFile.Text>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA["# Dockerfile Généré – " & strIncidentId & Environment.NewLine &
+"**Généré le :** " & DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") & Environment.NewLine & Environment.NewLine &
+"```dockerfile" & Environment.NewLine &
+strDockerfile & Environment.NewLine &
+"```"]]>
+                </VisualBasicValue>
+              </InArgument>
+            </ui2:WriteTextFile.Text>
+          </ui2:WriteTextFile>
+
+          <ui2:LogMessage DisplayName="[LOG] Dockerfile sauvegardé" Level="Information">
+            <ui2:LogMessage.Message>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA["[IO] Fichier écrit : " & strDockerfilePath]]>
+                </VisualBasicValue>
+              </InArgument>
+            </ui2:LogMessage.Message>
+          </ui2:LogMessage>
+
+        </Sequence>
+      </TryCatch.Try>
+      <TryCatch.Catches>
+        <Catch x:TypeArguments="Exception">
+          <ActivityAction x:TypeArguments="Exception">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="Exception" Name="exGenerate" />
+            </ActivityAction.Argument>
+            <Sequence DisplayName="[CATCH] Erreur Étape 4 /generate-artifacts">
+              <ui2:LogMessage DisplayName="[LOG] ⚠ Erreur /generate-artifacts" Level="Error">
+                <ui2:LogMessage.Message>
+                  <InArgument x:TypeArguments="x:String">
+                    <VisualBasicValue x:TypeArguments="x:String">
+                      <![CDATA["[ERROR] Étape 4 /generate-artifacts ÉCHOUÉ | " & exGenerate.GetType().Name & " – " & exGenerate.Message]]>
+                    </VisualBasicValue>
+                  </InArgument>
+                </ui2:LogMessage.Message>
+              </ui2:LogMessage>
+              <Throw DisplayName="[THROW] Re-lancer exception critique">
+                <Throw.Exception>
+                  <InArgument x:TypeArguments="Exception">
+                    <VisualBasicValue x:TypeArguments="Exception">[New ApplicationException("[SDLC-STEP4] Échec /generate-artifacts : " &amp; exGenerate.Message, exGenerate)]</VisualBasicValue>
+                  </InArgument>
+                </Throw.Exception>
+              </Throw>
+            </Sequence>
+          </ActivityAction>
+        </Catch>
+      </TryCatch.Catches>
+    </TryCatch>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         ÉTAPE 5 – Appel POST /validate
+         Payload : { "script_path": "/workspace_agents/{incident_id}/test.sh" }
+         Réponse : { "status": "...", "logs": "..." }
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <TryCatch DisplayName="[TRY] Étape 5 – POST /validate">
+      <TryCatch.Try>
+        <Sequence DisplayName="[SEQ] Validation Post-Déploiement">
+
+          <Assign DisplayName="[ASSIGN] Payload /validate">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[strPayloadValidate]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA[Newtonsoft.Json.JsonConvert.SerializeObject(New Dictionary(Of String, Object) From {
+                    {"script_path", "/workspace_agents/" & strIncidentId & "/test.sh"}
+                  })]]>
+                </VisualBasicValue>
+              </InArgument>
+            </Assign.Value>
+          </Assign>
+
+          <ui2:LogMessage DisplayName="[LOG] Appel /validate" Level="Information">
+            <ui2:LogMessage.Message>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA["[API] POST " & strBaseUrl & "/validate | Payload=" & strPayloadValidate]]>
+                </VisualBasicValue>
+              </InArgument>
+            </ui2:LogMessage.Message>
+          </ui2:LogMessage>
+
+          <ui:HttpClient DisplayName="[HTTP] POST /validate"
+                         EndPoint="[strBaseUrl &amp; &quot;/validate&quot;]"
+                         Method="POST"
+                         AcceptFormat="JSON"
+                         ContentType="application/json">
+            <ui:HttpClient.Body>
+              <InArgument x:TypeArguments="x:String">[strPayloadValidate]</InArgument>
+            </ui:HttpClient.Body>
+            <ui:HttpClient.Result>
+              <OutArgument x:TypeArguments="x:String">[strResponseValidate]</OutArgument>
+            </ui:HttpClient.Result>
+            <ui:HttpClient.StatusCode>
+              <OutArgument x:TypeArguments="x:Int32">[intStatusCode]</OutArgument>
+            </ui:HttpClient.StatusCode>
+          </ui:HttpClient>
+
+          <ui2:LogMessage DisplayName="[LOG] Réponse /validate" Level="Information">
+            <ui2:LogMessage.Message>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA["[API] /validate – HTTP " & intStatusCode.ToString() & " | Réponse=" & strResponseValidate]]>
+                </VisualBasicValue>
+              </InArgument>
+            </ui2:LogMessage.Message>
+          </ui2:LogMessage>
+
+          <ui:DeserializeJson DisplayName="[JSON] Désérialiser réponse /validate">
+            <ui:DeserializeJson.JsonString>
+              <InArgument x:TypeArguments="x:String">[strResponseValidate]</InArgument>
+            </ui:DeserializeJson.JsonString>
+            <ui:DeserializeJson.Result>
+              <OutArgument x:TypeArguments="Newtonsoft.Json.Linq.JObject">[jobjValidate]</OutArgument>
+            </ui:DeserializeJson.Result>
+          </ui:DeserializeJson>
+
+          <Assign DisplayName="[ASSIGN] Extraire status depuis jobjValidate">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[strValidationStatus]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA[If(jobjValidate("status") IsNot Nothing, jobjValidate("status").ToString().ToUpper(), "UNKNOWN")]]>
+                </VisualBasicValue>
+              </InArgument>
+            </Assign.Value>
+          </Assign>
+
+          <Assign DisplayName="[ASSIGN] Extraire logs depuis jobjValidate">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[strValidationLogs]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA[If(jobjValidate("logs") IsNot Nothing, jobjValidate("logs").ToString(), String.Empty)]]>
+                </VisualBasicValue>
+              </InArgument>
+            </Assign.Value>
+          </Assign>
+
+          <!-- ═══════════════════════════════════════════════════════════════
+               ÉTAPE 6 – VerifyExpression : status = "success"
+               ═══════════════════════════════════════════════════════════════ -->
+          <uta:VerifyExpression DisplayName="[ASSERT] Étape 6 – Vérifier status = SUCCESS"
+                                ContinueOnFailure="True">
+            <uta:VerifyExpression.Expression>
+              <InArgument x:TypeArguments="x:Boolean">
+                <VisualBasicValue x:TypeArguments="x:Boolean">
+                  <![CDATA[strValidationStatus.Equals("SUCCESS", StringComparison.OrdinalIgnoreCase) OrElse
+                   strValidationStatus.Equals("PASSED", StringComparison.OrdinalIgnoreCase)]]>
+                </VisualBasicValue>
+              </InArgument>
+            </uta:VerifyExpression.Expression>
+            <uta:VerifyExpression.Message>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA["[ASSERT] Validation status attendu : SUCCESS/PASSED | Obtenu : " & strValidationStatus]]>
+                </VisualBasicValue>
+              </InArgument>
+            </uta:VerifyExpression.Message>
+          </uta:VerifyExpression>
+
+          <!-- Déterminer boolValidationSuccess -->
+          <Assign DisplayName="[ASSIGN] Évaluer boolValidationSuccess">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[boolValidationSuccess]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">
+                <VisualBasicValue x:TypeArguments="x:Boolean">
+                  <![CDATA[strValidationStatus.Equals("SUCCESS", StringComparison.OrdinalIgnoreCase) OrElse
+                   strValidationStatus.Equals("PASSED", StringComparison.OrdinalIgnoreCase)]]>
+                </VisualBasicValue>
+              </InArgument>
+            </Assign.Value>
+          </Assign>
+
+          <ui2:LogMessage DisplayName="[LOG] Résultat validation">
+            <ui2:LogMessage.Level>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">[If(boolValidationSuccess, "Information", "Warn")]</VisualBasicValue>
+              </InArgument>
+            </ui2:LogMessage.Level>
+            <ui2:LogMessage.Message>
+              <InArgument x:TypeArguments="x:String">
+                <VisualBasicValue x:TypeArguments="x:String">
+                  <![CDATA["[VALIDATE] Status=" & strValidationStatus & " | Succès=" & boolValidationSuccess.ToString() & " | Logs=" & strValidationLogs.Substring(0, Math.Min(200, strValidationLogs.Length))]]>
+                </VisualBasicValue>
+              </InArgument>
+            </ui2:LogMessage.Message>
+          </ui2:LogMessage>
+
+        </Sequence>
+      </TryCatch.Try>
+      <TryCatch.Catches>
+        <Catch x:TypeArguments="Exception">
+          <ActivityAction x:TypeArguments="Exception">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="Exception" Name="exValidate" />
+            </ActivityAction.Argument>
+            <Sequence DisplayName="[CATCH] Erreur Étape 5 /validate">
+              <ui2:LogMessage DisplayName="[LOG] ⚠ Erreur /validate" Level="Error">
+                <ui2:LogMessage.Message>
+                  <InArgument x:TypeArguments="x:String">
+                    <VisualBasicValue x:TypeArguments="x:String">
+                      <![CDATA["[ERROR] Étape 5 /validate ÉCHOUÉ | " & exValidate.GetType().Name & " – " & exValidate.Message]]>
+                    </VisualBasicValue>
+                  </InArgument>
+                </ui2:LogMessage.Message>
+              </ui2:LogMessage>
+              <!-- La validation échouée déclenche la remédiation → ne pas re-lancer -->
+              <Assign DisplayName="[ASSIGN] Forcer boolValidationSuccess = False">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Boolean">[boolValidationSuccess]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Boolean">[False]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign DisplayName="[ASSIGN] Copier exception dans logs">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:String">[strValidationLogs]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:String">[exValidate.Message &amp; Environment.NewLine &amp; exValidate.StackTrace]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </Sequence>
+          </ActivityAction>
+        </Catch>
+      </TryCatch.Catches>
+    </TryCatch>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         ÉTAPE 7 – Remédiation conditionnelle (si validation échouée)
+         Payload : { "incident_id": "...", "logs": "..." }
+         Réponse : { "status": "...", "fixed_code": "..." }
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <If DisplayName="[IF] Étape 7 – La validation a-t-elle échoué ?" Condition="[Not boolValidationSuccess]">
+      <If.Then>
+        <TryCatch DisplayName="[TRY] Remédiation POST /remediate">
+          <TryCatch.Try>
+            <Sequence DisplayName="[SEQ] Auto-Remédiation via /remediate">
+
+              <ui2:LogMessage DisplayName="[LOG] ⚡ Validation échouée – Lancement remédiation" Level="Warn">
+                <ui2:LogMessage.Message>
+                  <InArgument x:TypeArguments="x:String">
+                    <VisualBasicValue x:TypeArguments="x:String">
+                      <![CDATA["[REMEDIATE] Déclenchement auto-remédiation | IncidentId=" & strIncidentId & " | ValidationStatus=" & strValidationStatus]]>
+                    </VisualBasicValue>
+                  </InArgument>
+                </ui2:LogMessage.Message>
+              </ui2:LogMessage>
+
+              <Assign DisplayName="[ASSIGN] Payload /remediate">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:String">[strPayloadRemediate]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:String">
+                    <VisualBasicValue x:TypeArguments="x:String">
+                      <![CDATA[Newtonsoft.Json.JsonConvert.SerializeObject(New Dictionary(Of String, Object) From {
+                        {"incident_id", strIncidentId},
+                        {"logs", strValidationLogs}
+                      })]]>
+                    </VisualBasicValue>
+                  </InArgument>
+                </Assign.Value>
+              </Assign>
+
+              <ui2:LogMessage DisplayName="[LOG] Appel /remediate" Level="Information">
+                <ui2:LogMessage.Message>
+                  <InArgument x:TypeArguments="x:String">
+                    <VisualBasicValue x:TypeArguments="x:String">
+                      <![CDATA["[API] POST " & strBaseUrl & "/remediate | IncidentId=" & strIncidentId]]>
+                    </VisualBasicValue>
+                  </InArgument>
+                </ui2:LogMessage.Message>
+              </ui2:LogMessage>
+
+              <ui:HttpClient DisplayName="[HTTP] POST /remediate"
+                             EndPoint="[strBaseUrl &amp; &quot;/remediate&quot;]"
+                             Method="POST"
+                             AcceptFormat="JSON"
+                             ContentType="application/json">
+                <ui:HttpClient.Body>
+                  <InArgument x:TypeArguments="x:String">[strPayloadRemediate]</InArgument>
+                </ui:HttpClient.Body>
+                <ui:HttpClient.Result>
+                  <OutArgument x:TypeArguments="x:String">[strResponseRemediate]</OutArgument>
+                </ui:HttpClient.Result>
+                <ui:HttpClient.StatusCode>
+                  <OutArgument x:TypeArguments="x:Int32">[intStatusCode]</OutArgument>
+                </ui:HttpClient.StatusCode>
+              </ui:HttpClient>
+
+              <ui2:LogMessage DisplayName="[LOG] Réponse /remediate" Level="Information">
+                <ui2:LogMessage.Message>
+                  <InArgument x:TypeArguments="x:String">
+                    <VisualBasicValue x:TypeArguments="x:String">
+                      <![CDATA["[API] /remediate – HTTP " & intStatusCode.ToString() & " | Réponse=" & strResponseRemediate]]>
+                    </VisualBasicValue>
+                  </InArgument>
+                </ui2:LogMessage.Message>
+              </ui2:LogMessage>
+
+              <ui:DeserializeJson DisplayName="[JSON] Désérialiser réponse /remediate">
+                <ui:DeserializeJson.JsonString>
+                  <InArgument x:TypeArguments="x:String">[strResponseRemediate]</InArgument>
+                </ui:DeserializeJson.JsonString>
+                <ui:DeserializeJson.Result>
+                  <OutArgument x:TypeArguments="Newtonsoft.Json.Linq.JObject">[jobjRemediate]</OutArgument>
+                </ui:DeserializeJson.Result>
+              </ui:DeserializeJson>
+
+              <Assign DisplayName="[ASSIGN] Extraire strRemediationStatus">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:String">[strRemediationStatus]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:String">
+                    <VisualBasicValue x:TypeArguments="x:String">
+                      <![CDATA[If(jobjRemediate("status") IsNot Nothing, jobjRemediate("status").ToString(), "UNKNOWN")]]>
+                    </VisualBasicValue>
+                  </InArgument>
+                </Assign.Value>
+              </Assign>
+
+              <Assign DisplayName="[ASSIGN] Extraire strRemediationFixedCode">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:String">[strRemediationFixedCode]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:String">
+                    <VisualBasicValue x:TypeArguments="x:String">
+                      <![CDATA[If(jobjRemediate("fixed_code") IsNot Nothing, jobjRemediate("fixed_code").ToString(), String.Empty)]]>
+                    </VisualBasicValue>
+                  </InArgument>
+                </Assign.Value>
+              </Assign>
+
+              <ui2:LogMessage DisplayName="[LOG] Résultat remédiation" Level="Information">
+                <ui2:LogMessage.Message>
+                  <InArgument x:TypeArguments="x:String">
+                    <VisualBasicValue x:TypeArguments="x:String">
+                      <![CDATA["[REMEDIATE] Status=" & strRemediationStatus & " | FixedCode=" & strRemediationFixedCode.Substring(0, Math.Min(300, strRemediationFixedCode.Length))]]>
+                    </VisualBasicValue>
+                  </InArgument>
+                </ui2:LogMessage.Message>
+              </ui2:LogMessage>
+
+              <!-- Sauvegarder le code corrigé par l'IA -->
+              <ui2:WriteTextFile DisplayName="[IO] Sauvegarder Fixed_Code.md" Append="False" Encoding="[System.Text.Encoding.UTF8]">
+                <ui2:WriteTextFile.FileName>
+                  <InArgument x:TypeArguments="x:String">
+                    <VisualBasicValue x:TypeArguments="x:String">
+                      <![CDATA["Result\Fixed_Code_" & strIncidentId & ".md"]]>
+                    </VisualBasicValue>
+                  </InArgument>
+                </ui2:WriteTextFile.FileName>
+                <ui2:WriteTextFile.Text>
+                  <InArgument x:TypeArguments="x:String">
+                    <VisualBasicValue x:TypeArguments="x:String">
+                      <![CDATA["# Code Corrigé – Remédiation IA" & Environment.NewLine &
+"**Incident :** " & strIncidentId & Environment.NewLine &
+"**Date :** " & DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") & Environment.NewLine &
+"**Status remédiation :** " & strRemediationStatus & Environment.NewLine & Environment.NewLine &
+"## Logs d'erreur d'origine" & Environment.NewLine & Environment.NewLine &
+"```" & Environment.NewLine & strValidationLogs & Environment.NewLine & "```" & Environment.NewLine & Environment.NewLine &
+"## Code corrigé" & Environment.NewLine & Environment.NewLine &
+"```" & Environment.NewLine & strRemediationFixedCode & Environment.NewLine & "```"]]>
+                    </VisualBasicValue>
+                  </InArgument>
+                </ui2:WriteTextFile.Text>
+              </ui2:WriteTextFile>
+
+              <ui2:LogMessage DisplayName="[LOG] ✅ Remédiation complète" Level="Information">
+                <ui2:LogMessage.Message>
+                  <InArgument x:TypeArguments="x:String">
+                    <VisualBasicValue x:TypeArguments="x:String">
+                      <![CDATA["[REMEDIATE] ✅ Cycle de remédiation terminé | Status=" & strRemediationStatus & " | Fichier : Result\Fixed_Code_" & strIncidentId & ".md"]]>
+                    </VisualBasicValue>
+                  </InArgument>
+                </ui2:LogMessage.Message>
+              </ui2:LogMessage>
+
+            </Sequence>
+          </TryCatch.Try>
+          <TryCatch.Catches>
+            <Catch x:TypeArguments="Exception">
+              <ActivityAction x:TypeArguments="Exception">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="Exception" Name="exRemediate" />
+                </ActivityAction.Argument>
+                <Sequence DisplayName="[CATCH] Erreur Étape 7 /remediate">
+                  <ui2:LogMessage DisplayName="[LOG] ⚠ Erreur /remediate" Level="Error">
+                    <ui2:LogMessage.Message>
+                      <InArgument x:TypeArguments="x:String">
+                        <VisualBasicValue x:TypeArguments="x:String">
+                          <![CDATA["[ERROR] Étape 7 /remediate ÉCHOUÉ | " & exRemediate.GetType().Name & " – " & exRemediate.Message & Environment.NewLine & exRemediate.StackTrace]]>
+                        </VisualBasicValue>
+                      </InArgument>
+                    </ui2:LogMessage.Message>
+                  </ui2:LogMessage>
+                </Sequence>
+              </ActivityAction>
+            </Catch>
+          </TryCatch.Catches>
+        </TryCatch>
+      </If.Then>
+      <If.Else>
+        <!-- Validation réussie -->
+        <ui2:LogMessage DisplayName="[LOG] ✅ Validation SUCCESS – Remédiation ignorée" Level="Information">
+          <ui2:LogMessage.Message>
+            <InArgument x:TypeArguments="x:String">
+              <VisualBasicValue x:TypeArguments="x:String">
+                <![CDATA["[SDLC] ✅ Pipeline terminé avec succès | IncidentId=" & strIncidentId & " | Status=" & strValidationStatus]]>
+              </VisualBasicValue>
+            </InArgument>
+          </ui2:LogMessage.Message>
+        </ui2:LogMessage>
+      </If.Else>
+    </If>
+
+    <!-- ════════════════════════════════════════════════════════════
+         LOG FINAL : Bilan du pipeline
+         ════════════════════════════════════════════════════════════ -->
+    <ui2:LogMessage DisplayName="[LOG] ═══ Bilan Final Pipeline SDLC ═══" Level="Information">
+      <ui2:LogMessage.Message>
+        <InArgument x:TypeArguments="x:String">
+          <VisualBasicValue x:TypeArguments="x:String">
+            <![CDATA["═══ BILAN PIPELINE SDLC ═══" & Environment.NewLine &
+"IncidentId    : " & strIncidentId & Environment.NewLine &
+"Environnement : " & strEnvironnement & Environment.NewLine &
+"ValidationOK  : " & boolValidationSuccess.ToString() & Environment.NewLine &
+"Rapport       : " & strRapportPath & Environment.NewLine &
+"Dockerfile    : " & strDockerfilePath & Environment.NewLine &
+"Terminé le    : " & DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") & Environment.NewLine &
+"══════════════════════════════"]]>
+          </VisualBasicValue>
+        </InArgument>
+      </ui2:LogMessage.Message>
+    </ui2:LogMessage>
+
+  </Sequence>
+</Activity>
